@@ -71,56 +71,53 @@ if ($_SESSION['RollNo']) {
                         </div>
                         <!--/.sidebar-->
                     </div>
-
                     <div class="span9">
-                        <div class="content">
-
-                        <div class="module">
-                            <div class="module-head">
-                                <h3>Book Details</h3>
-                            </div>
-                            <div class="module-body">
-                        <?php
-                            $x=$_GET['id'];
-                            $sql="select * from LMS.book where BookId='$x'";
+                        <center>
+                        <a href="issue_requests.php" class="btn btn-info">Issue Requests</a>
+                        <a href="renew_requests.php" class="btn btn-info">Renew Request</a>
+                        <a href="return_requests.php" class="btn btn-info">Return Requests</a>
+                        </center>
+                        <h1><i>Renew Requests</i></h1>
+                        <table class="table" id = "tables">
+                                  <thead>
+                                    <tr>
+                                      <th>Roll Number</th>
+                                      <th>Book Id</th>
+                                      <th>Book Name</th>
+                                      <th>Renewals Left</th>
+                                      <th></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <?php
+                            $sql="select * from LMS.record,LMS.book,LMS.renew where renew.BookId=book.BookId and renew.RollNo=record.RollNo and renew.BookId=record.BookId";
                             $result=$conn->query($sql);
-                            $row=$result->fetch_assoc();    
-                            
+                            while($row=$result->fetch_assoc())
+                            {
                                 $bookid=$row['BookId'];
+                                $rollno=$row['RollNo'];
                                 $name=$row['Title'];
-					  $name=$row['Category'];
-                                $publisher=$row['Publisher'];
-                                $year=$row['Year'];
-                                $avail=$row['Availability'];
-
-                                echo "<b>Book ID:</b> ".$bookid."<br><br>";
-                                echo "<b>Category:</b> ".$Category."<br><br>";
-                                echo "<b>Title:</b> ".$name."<br><br>";
-                                $sql1="select * from LMS.author where BookId='$bookid'";
-                                $result=$conn->query($sql1);
-                                
-                                echo "<b>Author:</b> ";
-                                while($row1=$result->fetch_assoc())
-                                {
-                                    echo $row1['Author']."&nbsp;";
-                                }
-                                echo "<br><br>";
-                                echo "<b>Publisher:</b> ".$publisher."<br><br>";
-                                echo "<b>Year:</b> ".$year."<br><br>";
-                                echo "<b>Availability:</b> ".$avail."<br><br>";
-
-                                
-                        
+                                $renewals=$row['Renewals_left'];
+                            
                            
                             ?>
-                            
-                        <a href="book.php" class="btn btn-primary">Go Back</a>                             
-                               </div>
-                           </div>
+                                    <tr>
+                                      <td><?php echo strtoupper($rollno) ?></td>
+                                      <td><?php echo $bookid ?></td>
+                                      <td><b><?php echo $name ?></b></td>
+                                      <td><?php echo $renewals ?></td>
+                                      <td><center>
+                                        <?php
+                                        if($renewals > 0)
+                                        {echo "<a href=\"acceptrenewal.php?id1=".$bookid."&id2=".$rollno."\" class=\"btn btn-success\">Accept</a>";}
+                                         ?>
+                                        <!--a href="rejectrenewal.php?id1=<?php echo $bookid; ?>&id2=<?php echo $rollno; ?>" class="btn btn-danger">Reject</a-->
+                                    </center></td>
+                                    </tr>
+                               <?php } ?>
+                               </tbody>
+                                </table>
                             </div>
-                    <!--/.span3-->
-                    <!--/.span9-->
-                
                     <!--/.span3-->
                     <!--/.span9-->
                 </div>

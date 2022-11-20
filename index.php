@@ -92,7 +92,7 @@ if(isset($_POST['signin']))
  $p=$_POST['Password'];
  $c=$_POST['Category'];
 
- $sql="select * from LMS.user where RollNo='$u'";
+ $sql="select * from lms.user where RollNo='$u'";
 
  $result = $conn->query($sql);
 $row = $result->fetch_assoc();

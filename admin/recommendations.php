@@ -71,57 +71,40 @@ if ($_SESSION['RollNo']) {
                         </div>
                         <!--/.sidebar-->
                     </div>
+                    <!--/.span3-->
 
                     <div class="span9">
-                        <div class="content">
-
-                        <div class="module">
-                            <div class="module-head">
-                                <h3>Book Details</h3>
-                            </div>
-                            <div class="module-body">
-                        <?php
-                            $x=$_GET['id'];
-                            $sql="select * from LMS.book where BookId='$x'";
+                        <table class="table" id = "tables">
+                                  <thead>
+                                    <tr>
+                                      <th>Book Name</th>
+                                      <th>Description</th>
+                                      <th>Recommended By</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <?php
+                            $sql="select * from LMS.recommendations";
                             $result=$conn->query($sql);
-                            $row=$result->fetch_assoc();    
-                            
-                                $bookid=$row['BookId'];
-                                $name=$row['Title'];
-					  $name=$row['Category'];
-                                $publisher=$row['Publisher'];
-                                $year=$row['Year'];
-                                $avail=$row['Availability'];
-
-                                echo "<b>Book ID:</b> ".$bookid."<br><br>";
-                                echo "<b>Category:</b> ".$Category."<br><br>";
-                                echo "<b>Title:</b> ".$name."<br><br>";
-                                $sql1="select * from LMS.author where BookId='$bookid'";
-                                $result=$conn->query($sql1);
-                                
-                                echo "<b>Author:</b> ";
-                                while($row1=$result->fetch_assoc())
-                                {
-                                    echo $row1['Author']."&nbsp;";
-                                }
-                                echo "<br><br>";
-                                echo "<b>Publisher:</b> ".$publisher."<br><br>";
-                                echo "<b>Year:</b> ".$year."<br><br>";
-                                echo "<b>Availability:</b> ".$avail."<br><br>";
-
-                                
-                        
-                           
+                            while($row=$result->fetch_assoc())
+                            {
+                                $bookname=$row['Book_Name'];
+                                $description=$row['Description'];
+                                $rollno=$row['RollNo'];
                             ?>
-                            
-                        <a href="book.php" class="btn btn-primary">Go Back</a>                             
-                               </div>
-                           </div>
-                            </div>
-                    <!--/.span3-->
-                    <!--/.span9-->
-                
-                    <!--/.span3-->
+                                    <tr>
+                                      <td><?php echo $bookname ?></td>
+                                      <td><?php echo $description?></td>
+                                      <td><b><?php echo strtoupper($rollno)?></b></td>
+
+                                    </tr>
+                               <?php } ?>
+                               </tbody>
+                                </table>
+
+                                <center>
+                                <a href="addbook.php" class="btn btn-success">Add a Book</a></center>
+                    </div>
                     <!--/.span9-->
                 </div>
             </div>
