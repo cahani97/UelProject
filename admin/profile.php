@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require('dbconn.php');
 ?>
 
@@ -32,7 +33,7 @@ if ($_SESSION['RollNo']) {
                                 <img src="images/user.png" class="nav-avatar" />
                                 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="index.php">Your Profile</a></li>
+                                    <li><a href="profile.php">Your Profile</a></li>
                                     <!--li><a href="#">Edit Profile</a></li>
                                     <li><a href="#">Account Settings</a></li-->
                                     <li class="divider"></li>
@@ -72,83 +73,74 @@ if ($_SESSION['RollNo']) {
                         <!--/.sidebar-->
                     </div>
                     <!--/.span3-->
-                    <!--/.span9-->
+                    
                     <div class="span9">
-                    <div class="content">
-
                         <div class="module">
                             <div class="module-head">
-                                <h3>Add Book</h3>
+                                <h3>Update Details</h3>
                             </div>
                             <div class="module-body">
 
-                                    
-                                    <br >
 
-                                    <form class="form-horizontal row-fluid" action="addbook.php" method="post">
-                                        <div class="control-group">
-                                            <label class="control-label" for="Title"><b>Book Title</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="title" name="title" placeholder="Title" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Author"><b>Author</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="author1" name="author1" class="span8" required>
-                                                <input type="text" id="author2" name="author2" class="span8">
-                                                <input type="text" id="author3" name="author3" class="span8">
+                                <?php
+                                $rollno = $_SESSION['RollNo'];
+                                $sql="select * from LMS.user where RollNo='$rollno'";
+                                $result=$conn->query($sql);
+                                $row=$result->fetch_assoc();
 
-                                            </div>
-							</div>
-							
-										<div class="control-group">
-                                            <label class="control-label" for="Category"><b>Category</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="Category" name="Category" placeholder="Category" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Publisher"><b>Publisher</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="publisher" name="publisher" placeholder="Publisher" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Year"><b>Year</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="year" name="year" placeholder="Year" class="span8" required>
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" for="Availability"><b>Number of Copies</b></label>
-                                            <div class="controls">
-                                                <input type="text" id="availability" name="availability" placeholder="Number of Copies" class="span8" required>
-                                            </div>
-                                        </div>
-                                        
+                                $name=$row['Name'];
+                                $email=$row['EmailId'];
+                                $mobno=$row['MobNo'];
+                                $pswd=$row['Password'];
+                                ?>    
+                                
+                                <form class="form-horizontal row-fluid" action="edit_admin_details.php?id=<?php echo $rollno ?>" method="post">
 
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <button type="submit" name="submit"class="btn">Add Book</button>
-                                            </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="Name"><b>Name:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="Name" name="Name" value= "<?php echo $name?>" class="span8" required>
                                         </div>
-                                    </form>
-                            </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="EmailId"><b>Email Id:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="EmailId" name="EmailId" value= "<?php echo $email?>" class="span8" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="MobNo"><b>Mobile Number:</b></label>
+                                        <div class="controls">
+                                            <input type="text" id="MobNo" name="MobNo" value= "<?php echo $mobno?>" class="span8" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="Password"><b>New Password:</b></label>
+                                        <div class="controls">
+                                            <input type="password" id="Password" name="Password"  value= "<?php echo $pswd?>" class="span8" required>
+                                        </div>
+                                    </div>   
+
+                                    <div class="control-group">
+                                            <div class="controls">
+                                                <button type="submit" name="submit"class="btn-primary"><center>Update Details</center></button>
+                                            </div>
+                                        </div>                                                                     
+
+                                </form>
+                                       
                         </div>
-
-                        
-                        
-                    </div><!--/.content-->
-                </div>
-
+                        </div>  
+                    </div>
+                    
+                    <!--/.span9-->
                 </div>
             </div>
             <!--/.container-->
-
         </div>
-
-
 <div class="footer">
             <div class="container">
                 <b class="copyright">&copy; 2018 Library Management System </b>All rights reserved.
@@ -167,38 +159,24 @@ if ($_SESSION['RollNo']) {
 <?php
 if(isset($_POST['submit']))
 {
-    $title=$_POST['title'];
-    $author1=$_POST['author1'];
-    $author2=$_POST['author2'];
-    $author3=$_POST['author3'];
-    $publisher=$_POST['publisher'];
-	$Category=$_POST['Category'];
-    $year=$_POST['year'];
-    $availability=$_POST['availability'];
+    $rollno = $_GET['id'];
+    $name=$_POST['Name'];
+    $email=$_POST['EmailId'];
+    $mobno=$_POST['MobNo'];
+    $pswd=$_POST['Password'];
 
-$sql1="insert into LMS.book (Title,Publisher,Year,Availability) values ('$title','$publisher','$Category','$year','$availability')";
+$sql1="update LMS.user set Name='$name', EmailId='$email', MobNo='$mobno', Password='$pswd' where RollNo='$rollno'";
+
+
 
 if($conn->query($sql1) === TRUE){
-$sql2="select max(BookId) as x from LMS.book";
-$result=$conn->query($sql2);
-$row=$result->fetch_assoc();
-$x=$row['x'];
-$sql3="insert into LMS.author values ('$x','$author1')";
-$result=$conn->query($sql3);
-if(!empty($author2))
-{ $sql4="insert into LMS.author values('$x','$author2')";
-  $result=$conn->query($sql4);}
-if(!empty($author3))
-{ $sql5="insert into LMS.author values('$x','$author3')";
-  $result=$conn->query($sql5);}
-
 echo "<script type='text/javascript'>alert('Success')</script>";
+header( "Refresh:0.01; url=index.php", true, 303);
 }
 else
 {//echo $conn->error;
 echo "<script type='text/javascript'>alert('Error')</script>";
 }
-    
 }
 ?>
       

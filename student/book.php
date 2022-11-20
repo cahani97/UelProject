@@ -19,6 +19,7 @@ if ($_SESSION['RollNo']) {
         <link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
         <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
             rel='stylesheet'>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
     </head>
     <body>
         <div class="navbar navbar-fixed-top">
@@ -70,7 +71,7 @@ if ($_SESSION['RollNo']) {
                     </div>
                     <!--/.span3-->
                     <div class="span9">
-                        <form class="form-horizontal row-fluid" action="book.php" method="post">
+                        <!-- <form class="form-horizontal row-fluid" action="book.php" method="post">
                                         <div class="control-group">
                                             <label class="control-label" for="Search"><b>Search:</b></label>
                                             <div class="controls">
@@ -78,7 +79,7 @@ if ($_SESSION['RollNo']) {
                                                 <button type="submit" name="submit"class="btn">Search</button>
                                             </div>
                                         </div>
-                                    </form>
+                                    </form> -->
                                     <br>
                                     <?php
                                     if(isset($_POST['submit']))
@@ -98,11 +99,12 @@ if ($_SESSION['RollNo']) {
 
                                     
                                     ?>
-                        <table class="table" id = "tables">
+                        <table  class="table" id = "table_books">
                                   <thead>
                                     <tr>
                                       <th>Book id</th>
                                       <th>Book name</th>
+                                      <th>Author</th>
                                       <th>Availability</th>
                                       <th></th>
                                     </tr>
@@ -115,11 +117,13 @@ if ($_SESSION['RollNo']) {
                             {
                                 $bookid=$row['BookId'];
                                 $name=$row['Title'];
+                                $author=$row['author'];
                                 $avail=$row['Availability'];
                             ?>
                                     <tr>
                                       <td><?php echo $bookid ?></td>
                                       <td><?php echo $name ?></td>
+                                      <td><?php echo $author ?></td>
                                       <td><b><?php 
                                            if($avail > 0)
                                               echo "<font color=\"green\">AVAILABLE</font>";
@@ -131,8 +135,25 @@ if ($_SESSION['RollNo']) {
                                                  </b></td>
                                       <td><center><a href="bookdetails.php?id=<?php echo $bookid; ?>" class="btn btn-primary">Details</a>
                                       	<?php
-                                      	if($avail > 0)
-                                      		echo "<a href=\"issue_request.php?id=".$bookid."\" class=\"btn btn-success\">Issue</a>";
+                                        $rollno = $_SESSION['RollNo'];
+                                       $sqlbooks="select * from LMS.record where RollNo = '$rollno' and Date_of_Issue is NOT NULL";
+                                        
+                                       $resultbooks=$conn->query($sqlbooks);
+                                       $rowcount6 = mysqli_num_rows($resultbooks);
+                                    //    echo($rowcount6);
+                                    //    echo($rollno);
+                                        if( $rowcount6 <= 5){
+                                            if ($avail > 0){
+                                                echo "<a href=\"issue_request.php?id=".$bookid."\" class=\"btn btn-success\">Issue</a>";
+                                            }else{
+                                                echo "No Availabilty";  
+                                            }
+                                            
+                                        }else{
+                                            echo "Limit exceded";
+                                        }
+                                      	// if($avail > 0)
+                                        //   echo "<a href=\"issue_request.php?id=".$bookid."\" class=\"btn btn-success\">Issue</a>";
                                         ?>
                                         </center></td>
                                     </tr>
@@ -162,11 +183,16 @@ if ($_SESSION['RollNo']) {
         <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="scripts/flot/jquery.flot.js" type="text/javascript"></script>
         <script src="scripts/flot/jquery.flot.resize.js" type="text/javascript"></script>
-        <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script>
-        <script src="scripts/common.js" type="text/javascript"></script>
+        <!-- <script src="scripts/datatables/jquery.dataTables.js" type="text/javascript"></script> -->
+        <!-- <script src="scripts/common.js" type="text/javascript"></script> -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+        <script>
+            $(document).ready( function () {
+                $('#table_books').DataTable();
+            } );
+        </script>
       
     </body>
-
 </html>
 
 <?php }
